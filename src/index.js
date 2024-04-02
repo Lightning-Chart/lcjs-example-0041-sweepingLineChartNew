@@ -10,7 +10,7 @@ const sampleCount = Math.ceil((CONFIG.sampleRate * CONFIG.timeView) / 1000)
 const lc = lightningChart()
 const chart = lc
     .ChartXY({
-        theme: Themes[new URLSearchParams(window.location.search).get('theme') || 'darkGold'] || undefined
+        theme: Themes[new URLSearchParams(window.location.search).get('theme') || 'darkGold'] || undefined,
     })
     .setTitle('Sweeping Real-Time Chart')
     .setAutoCursor((cursor) => cursor.setTickMarkerXVisible(false))
