@@ -7,7 +7,9 @@ const CONFIG = {
 }
 const sampleCount = Math.ceil((CONFIG.sampleRate * CONFIG.timeView) / 1000)
 
-const lc = lightningChart()
+const lc = lightningChart({
+            resourcesBaseUrl: new URL(document.head.baseURI).origin + new URL(document.head.baseURI).pathname + 'resources/',
+        })
 const chart = lc
     .ChartXY({
         theme: Themes[new URLSearchParams(window.location.search).get('theme') || 'darkGold'] || undefined,
