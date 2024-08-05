@@ -1,4 +1,4 @@
-const lcjs = require('@arction/lcjs')
+const lcjs = require('@lightningchart/lcjs')
 const { lightningChart, Themes, AxisTickStrategies } = lcjs
 
 const CONFIG = {
@@ -15,7 +15,7 @@ const chart = lc
         theme: Themes[new URLSearchParams(window.location.search).get('theme') || 'darkGold'] || undefined,
     })
     .setTitle('Sweeping Real-Time Chart')
-    .setAutoCursor((cursor) => cursor.setTickMarkerXVisible(false))
+    .setCursor((cursor) => cursor.setTickMarkerXVisible(false))
 
 chart.getDefaultAxisX().setDefaultInterval({ start: 0, end: CONFIG.timeView }).setTickStrategy(AxisTickStrategies.Empty)
 const series = chart
