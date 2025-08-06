@@ -12,15 +12,19 @@ const lc = lightningChart({
         })
 const chart = lc
     .ChartXY({
+        legend: { visible: false },
         theme: Themes[new URLSearchParams(window.location.search).get('theme') || 'darkGold'] || undefined,
     })
     .setTitle('Sweeping Real-Time Chart')
     .setCursor((cursor) => cursor.setTickMarkerXVisible(false))
 
-chart.getDefaultAxisX().setDefaultInterval({ start: 0, end: CONFIG.timeView }).setTickStrategy(AxisTickStrategies.Empty)
+chart.axisX.setDefaultInterval({ start: 0, end: CONFIG.timeView }).setTickStrategy(AxisTickStrategies.Empty)
 const series = chart
-    .addPointLineAreaSeries({
-        dataPattern: 'ProgressiveX',
+    .addLineSeries({
+        schema: {
+            x: { auto: true },
+            y: { pattern: null },
+        },
     })
     .setMaxSampleCount(sampleCount)
 
@@ -32,18 +36,18 @@ const handleIncomingData = (yValues) => {
     const space = sampleCount - (lastSampleIndex + 1)
     // Put first set of samples to extend previous samples.
     const countRight = Math.min(space, count)
-    series.alterSamples(lastSampleIndex + 1, { yValues, count: countRight })
+    series.alterSamplesStartingFrom(lastSampleIndex + 1, { y: yValues }, { count: countRight })
     lastSampleIndex += countRight
     if (countRight < space) {
         // Remove the few oldest points that would be connected to last points pushed just now, to leave a gap between newest and oldest data.
         const gapCount = Math.min(Math.round(sampleCount * 0.05), sampleCount - (lastSampleIndex + 1))
         // Gap is displayed by using NaN as Y values.
-        series.alterSamples(lastSampleIndex + 1, { yValues: new Array(gapCount).fill(Number.NaN) })
+        series.alterSamplesStartingFrom(lastSampleIndex + 1, { y: new Array(gapCount).fill(Number.NaN) })
     }
     // Put other samples (if any) to beginning of sweeping history.
     const countLeft = count - countRight
     if (countLeft > 0) {
-        series.alterSamples(0, { yValues, offset: countRight })
+        series.alterSamplesStartingFrom(0, { y: yValues }, { offset: countRight })
         lastSampleIndex = countLeft - 1
     }
 
